@@ -1,11 +1,10 @@
-const Koa = require('koa')
-const app = new Koa()
+import Koa from 'koa'
+import { setFinalResponseMdw, setResponseTimeMdw } from './middlewares.js'
 
-const { setFinalResponseMdw, setResponseTimeMdw } = require('./middlewares')
+const app = new Koa()
 
 // piso 1 (primer middleware)
 app.use(setFinalResponseMdw)
-
 // piso 2 (segundo middleware)
 app.use(setResponseTimeMdw)
 
