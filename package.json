@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node --watch index.js",
+    "start": "node --env-file=.env --watch index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
@@ -16,7 +16,8 @@
   "dependencies": {
     "@koa/router": "^13.1.1",
     "koa": "^3.0.0",
-    "koa-router": "^13.1.1"
+    "koa-router": "^13.1.1",
+    "pg": "^8.16.3"
   },
   "devDependencies": {
     "standard": "^17.1.2"
