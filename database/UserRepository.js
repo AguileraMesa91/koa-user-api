@@ -20,7 +20,7 @@ async function createUser (name, email, password) {
   return res[0]
 }
 
-async function updateUser (id, name, email, password) {
+async function updateUser ({ id, name, email, password }) {
   const query = `
     UPDATE users
     SET name = $2, email = $3, password = $4
