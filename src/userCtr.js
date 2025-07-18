@@ -1,4 +1,5 @@
 import { UserRepository } from '../database/userRepository.js'
+import { hashPassword } from './utils/hashPassword.js'
 
 export const getAllUsers = async (ctx) => {
   const users = await UserRepository.getUsers()
@@ -12,21 +13,27 @@ export const getUserById = async (ctx) => {
 }
 
 export const createUser = async (ctx) => {
-  const userData = ctx.request.body
-  const newUser = await UserRepository.createUser(userData)
-  ctx.body = { ok: true, user: newUser }
+  console.log(ctx.request.body)
+  const { name, email, password } = ctx.request.body
+
+  const passwordHashed = await hashPassword(password)
+  const userSaved = await UserRepository.createUser({ name, email, password: passwordHashed })
+
+  ctx.body = { ok: true, user: userSaved }
 }
 
 export const updateUser = async (ctx) => {
   const id = ctx.params.id
   const userData = ctx.request.body
   const updatedUser = await UserRepository.updateUser(id, userData)
+
   ctx.body = { ok: true, user: updatedUser }
 }
 
 export const deleteUser = async (ctx) => {
   const id = ctx.params.id
   await UserRepository.deleteUser(id)
+
   ctx.body = { ok: true }
 }
 
