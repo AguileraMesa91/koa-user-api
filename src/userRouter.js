@@ -1,7 +1,10 @@
 import Router from '@koa/router'
 import { userCtr } from './userCtr.js'
+import { loginCtr } from './loginCtr.js'
 
 const router = new Router()
+
+router.post('/login', loginCtr.signIn)
 
 router.get('/user', userCtr.getAllUsers)
 router.get('/user/:id', userCtr.getUserById)
