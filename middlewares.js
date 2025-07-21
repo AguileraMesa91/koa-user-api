@@ -82,6 +82,15 @@ export const validateTokenMiddleware = async (ctx, next) => {
     ctx.body = { error: 'Token inválido o no proporcionado' }
     return
   }
-
   await next()
+}
+
+export const errorCatcherMdw = async (ctx, next) => {
+  try {
+    await next()
+  } catch (err) {
+    ctx.status = err?.cause?.code ?? 500
+    ctx.body = err?.message ?? 'unknown error'
+    ctx.app.emit('error', err, ctx)
+  }
 }

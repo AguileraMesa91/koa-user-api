@@ -1,9 +1,10 @@
 import Koa from 'koa'
-import { bodyParserMdw, setFinalResponseMdw, setResponseTimeMdw } from './middlewares.js'
+import { bodyParserMdw, errorCatcherMdw, setFinalResponseMdw, setResponseTimeMdw } from './middlewares.js'
 import userRouter from './src/userRouter.js'
 
 const app = new Koa()
 
+app.use(errorCatcherMdw)
 app.use(setFinalResponseMdw)
 app.use(setResponseTimeMdw)
 app.use(bodyParserMdw())

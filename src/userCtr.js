@@ -24,10 +24,12 @@ export const createUser = async (ctx) => {
 
 export const updateUser = async (ctx) => {
   const id = ctx.params.id
-  const userData = ctx.request.body
-  const updatedUser = await userRepository.updateUser(id, userData)
+  const { name, email, password } = ctx.request.body
 
-  ctx.body = { ok: true, user: updatedUser }
+  const passwordHashed = await hashPassword(password)
+  const Userupdated = await userRepository.updateUser({ id, name, email, password: passwordHashed })
+
+  ctx.body = { ok: true, user: Userupdated }
 }
 
 export const deleteUser = async (ctx) => {
