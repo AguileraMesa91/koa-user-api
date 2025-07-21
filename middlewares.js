@@ -1,3 +1,5 @@
+import { verifyToken } from './src/utils/tokenGenerator.js'
+
 export async function setFinalResponseMdw (ctx, next) {
   await next()
   const rt = ctx.response.get('X-Response-Time')
@@ -50,4 +52,36 @@ export function bodyParserMdw () {
     }
     await next()
   }
+}
+
+export const validateTokenMiddleware = async (ctx, next) => {
+  const BEARER_START = 'Bearer '
+
+  const checkStringStartWith = (str, start) => str.startsWith(start)
+
+  function checkTokenExists (token) {
+    if (typeof token !== 'string') {
+      throw new Error('Token not found')
+    }
+
+    if (!checkStringStartWith(token, BEARER_START)) {
+      throw new Error('Token format is invalid')
+    }
+
+    const bearerJwt = token.slice(BEARER_START.length)
+    return bearerJwt
+  }
+
+  let token = null
+
+  try {
+    token = checkTokenExists(ctx.headers.authorization)
+    ctx.currentUser = await verifyToken(token)
+  } catch (error) {
+    ctx.status = 401
+    ctx.body = { error: 'Token inválido o no proporcionado' }
+    return
+  }
+
+  await next()
 }
