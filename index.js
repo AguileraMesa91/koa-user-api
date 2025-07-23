@@ -1,18 +1,29 @@
+// index.js - Punto de entrada de la aplicación Koa
+// Configura el servidor Koa, middlewares globales y las rutas
+
 import Koa from 'koa'
-import { bodyParserMdw, errorCatcherMdw, setFinalResponseMdw, setResponseTimeMdw } from './middlewares.js'
+import {
+  bodyParserMdw,
+  errorCatcherMdw,
+  setFinalResponseMdw,
+  setResponseTimeMdw
+} from './middlewares.js'
 import userRouter from './src/userRouter.js'
 
-const app = new Koa()
+const app = new Koa() // Instancia de la aplicación Koa
 
-app.use(errorCatcherMdw)
-app.use(setFinalResponseMdw)
-app.use(setResponseTimeMdw)
-app.use(bodyParserMdw())
+// Middlewares globales
+app.use(errorCatcherMdw) // Maneja errores no capturados y envía respuestas consistentes
+app.use(setFinalResponseMdw) // Formatea la respuesta final en un objeto unificado
+app.use(setResponseTimeMdw) // Añade el tiempo de respuesta en los encabezados
+app.use(bodyParserMdw()) // Parsea automáticamente el cuerpo JSON de las solicitudes
 
+// Rutas de usuarios
 app
-  .use(userRouter.routes())
-  .use(userRouter.allowedMethods())
+  .use(userRouter.routes()) // Registra las rutas definidas para /user y /login
+  .use(userRouter.allowedMethods()) // Habilita solo los métodos HTTP permitidos en las rutas
 
+// Inicio del servidor
 app.listen(3000, () => {
-  console.log('Server is running on http://localhost:3000')
+  console.log('Server is running on http://localhost:3000') // Mensaje de confirmación al iniciar el servidor
 })
