@@ -1,64 +1,91 @@
-// userRepository.js - Repositorio para operaciones CRUD sobre usuarios
-// Utiliza executeQuery de db.js para interactuar con la base de datos
-
-import { executeQuery } from './db.js'
-
-async function getUsers () {
-  // Devuele todos los usuarios
-  const query = 'SELECT * FROM users'
-  const res = await executeQuery(query)
-  return res
-}
-
-async function getUserById (id) {
-  // Devuelve un usuario por su ID
-  const query = 'SELECT * FROM users WHERE id = $1'
-  const params = [id]
-  const res = await executeQuery(query, params)
-  return res[0]
-}
-
-async function getUserByEmail (email) {
-  // Devuelve un usuario por su email
-  const query = 'SELECT * FROM users WHERE email = $1'
-  const params = [email]
-  const res = await executeQuery(query, params)
-  return res[0]
-}
-
-async function createUser ({ name, email, password }) {
-  // Función para crear un nuevo usuario
-  const query = 'INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING *'
-  const params = [name, email, password]
-  const res = await executeQuery(query, params)
-  return res[0]
-}
-
-async function updateUser ({ id, name, email, password }) {
-  // Función para actualizar un usuario por su ID
-  const query = `
-    UPDATE users
-    SET name = $2, email = $3, password = $4
-    WHERE id = $1
-    RETURNING *`
-  const params = [id, name, email, password]
-  const res = await executeQuery(query, params)
-  return res[0]
-}
-
-async function deleteUser (id) {
-  // Función para eliminar un usuario por su ID
-  const query = 'DELETE FROM users WHERE id = $1 RETURNING *'
-  const params = [id]
-  const res = await executeQuery(query, params)
-  return res[0]
-}
+import { supabase } from './supabaseClient.js'
 
 export const userRepository = {
-  getUsers,
-  getUserById,
-  getUserByEmail,
-  createUser,
-  updateUser,
-  deleteUser
+  async getUsers () {
+    try {
+      const { data, error } = await supabase.from('users').select('*')
+      if (error) {
+        console.error('❌ Error en getUsers:', error)
+        throw error
+      }
+      return data
+    } catch (err) {
+      console.error('🔥 Excepción en getUsers:', err)
+      throw err
+    }
+  },
+
+  async getUserByEmail (email) {
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('email', email)
+        .single()
+
+      if (error) {
+        console.error('❌ Error en getUserByEmail:', error)
+        throw error
+      }
+      return data
+    } catch (err) {
+      console.error('🔥 Excepción en getUserByEmail:', err)
+      throw err
+    }
+  },
+
+  async getUserById (id) {
+    try {
+      const { data, error } = await supabase.from('users').select('*').eq('id', id).single()
+      if (error) {
+        console.error('❌ Error en getUserById:', error)
+        throw error
+      }
+      return data
+    } catch (err) {
+      console.error('🔥 Excepción en getUserById:', err)
+      throw err
+    }
+  },
+
+  async createUser (user) {
+    try {
+      const { data, error } = await supabase.from('users').insert(user).select().single()
+      if (error) {
+        console.error('❌ Error en createUser:', error)
+        throw error
+      }
+      return data
+    } catch (err) {
+      console.error('🔥 Excepción en createUser:', err)
+      throw err
+    }
+  },
+
+  async updateUser ({ id, ...user }) {
+    try {
+      const { data, error } = await supabase.from('users').update(user).eq('id', id).select().single()
+      if (error) {
+        console.error('❌ Error en updateUser:', error)
+        throw error
+      }
+      return data
+    } catch (err) {
+      console.error('🔥 Excepción en updateUser:', err)
+      throw err
+    }
+  },
+
+  async deleteUser (id) {
+    try {
+      const { error } = await supabase.from('users').delete().eq('id', id)
+      if (error) {
+        console.error('❌ Error en deleteUser:', error)
+        throw error
+      }
+    } catch (err) {
+      console.error('🔥 Excepción en deleteUser:', err)
+      throw err
+    }
+  }
 }

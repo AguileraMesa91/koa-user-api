@@ -9,6 +9,7 @@ import {
   setResponseTimeMdw
 } from './middlewares.js'
 import userRouter from './src/userRouter.js'
+import 'dotenv/config'
 
 const app = new Koa() // Instancia de la aplicación Koa
 
