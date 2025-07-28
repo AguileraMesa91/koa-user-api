@@ -1,0 +1,15 @@
+# render.yaml - Configuración para desplegar la API Koa en Render
+
+services:
+  - type: web
+    name: koa-api
+    runtime: node
+    repo: https://github.com/AguileraMesa91/koa-user-api
+    branch: main                                 
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: SUPABASE_URL
+        value: 
+      - key: SUPABASE_KEY
+        value: 
