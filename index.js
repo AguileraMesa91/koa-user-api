@@ -12,7 +12,7 @@ import userRouter from './src/userRouter.js'
 import 'dotenv/config'
 
 const app = new Koa() // Instancia de la aplicación Koa
-
+const PORT = process.env.PORT || 3000 // Constante para que Render asigne un puerto automáticamente
 // Middlewares globales
 app.use(errorCatcherMdw) // Maneja errores no capturados y envía respuestas consistentes
 app.use(setFinalResponseMdw) // Formatea la respuesta final en un objeto unificado
@@ -25,6 +25,6 @@ app
   .use(userRouter.allowedMethods()) // Habilita solo los métodos HTTP permitidos en las rutas
 
 // Inicio del servidor
-app.listen(3000, () => {
-  console.log('Server is running on http://localhost:3000') // Mensaje de confirmación al iniciar el servidor
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`) // Mensaje de confirmación al iniciar el servidor
 })
